@@ -127,5 +127,6 @@ if __name__ == "__main__":
     print(dt.datetime.now())
     print('CONVERTING TIME-SERIES TO IMAGES')
     pool.apply(data_to_image_preprocess)
+    #data_to_image_preprocess
     print('DONE!')
     print(dt.datetime.now())
