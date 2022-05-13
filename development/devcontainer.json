@@ -1,7 +1,7 @@
 {
     "dockerComposeFile": "../docker-compose.yml",
     "service": "dev_enviroment",
-    "workspaceFolder": "/root/etftrading",
+    "workspaceFolder": "/root/computer_vision_regression",
     "forwardPorts": [8888,8787,8786],
     "extensions": ["ms-python.anaconda-extension-pack", "eamodio.gitlens", "grapecity.gc-excelviewer", "ms-toolsai.jupyter", "ms-python.python", "ms-azuretools.vscode-docker","rmoff.ksql"],
 }

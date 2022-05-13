@@ -3,21 +3,23 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.layers import *
-from data_preprocessing import ensemble_data
+from data_preprocessing import ensemble_data 
 import datetime as dt
 import os
 
 
 #  Ensemble CNN network to train a CNN model on GAF images labeled Long and Short
 PATH = os.path.dirname(__file__)
-IMAGES_PATH = os.path.join(PATH, 'GramianAngularFields/TRAIN')
+IMAGES_PATH = os.path.join(PATH, 'TRAIN')
 REPO = os.path.join(PATH, 'Models')
 PATH_DOC = os.path.join(os.path.dirname(__file__), 'Documents')
 PATH_OUT = os.path.join(os.path.dirname(__file__), 'Output')
 EPOCHS = 5
-SPLIT = 0.30
+SPLIT = 0.5
 LR = 0.001
 TIMESTAMP = dt.datetime.now().strftime("%Y%m%d%H%M%S")
+
+TEST_LOOKBACK = 250
 
 cnn_networks = 3
 model = []
@@ -57,8 +59,8 @@ test_datagen = ImageDataGenerator(rescale=1/255)
 data_chunks = ensemble_data(cnn_networks, IMAGES_PATH)
 for j in range(cnn_networks):
     print('Net : {}'.format(j+1))
-    df_train = data_chunks[j].iloc[:-60]
-    df_test = data_chunks[j].iloc[-60:]
+    df_train = data_chunks[j].iloc[:-TEST_LOOKBACK]
+    df_test = data_chunks[j].iloc[-TEST_LOOKBACK:]
     train_generator = train_validate_datagen.flow_from_dataframe(
         dataframe=df_train,
         directory=IMAGES_PATH,

@@ -59,7 +59,7 @@ services:
       dockerfile: Dockerfile
     container_name: test_enviroment
     volumes: 
-      - .:/root/etftrading 
+      - .:/root/computer_vision_regression
 
     entrypoint: /bin/sh
     tty: true

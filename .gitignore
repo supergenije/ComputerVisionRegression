@@ -1,3 +1,4 @@
 *.png
 *pycache*
 IBM_adjusted.txt
+Models/*

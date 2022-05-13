@@ -16,10 +16,8 @@ def create_gaf(ts) -> Dict[str, Any]:
     :param ts:
     :return:
     """
-    data = dict()
     gadf = GramianAngularField(method='difference', image_size=ts.shape[0])
-    data['gadf'] = gadf.fit_transform(pd.DataFrame(ts).T)[0]
-    return data
+    return {'gadf': gadf.fit_transform(pd.DataFrame(ts).T)[0]}
 
 
 # Create images of the bundle that we pass
@@ -44,6 +42,6 @@ def create_images(X_plots: Any, image_name: str, destination: str, image_matrix:
         ax.set_yticks([])
         ax.imshow(image, cmap='rainbow', origin='lower')
 
-    repo = os.path.join('GramianAngularFields/TRAIN', destination)
+    repo = os.path.join('TRAIN', destination)
     fig.savefig(os.path.join(repo, image_name))
     plt.close(fig)
