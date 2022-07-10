@@ -24,8 +24,8 @@ def ensemble_data(networks_chunks: int, path: str) -> List[pd.DataFrame]:
     :return: List of overlapping index DataFrames
     """
     dataframes = []
-    for sub_folder in ['LONG', 'SHORT']:
-        images = glob.glob(path + '/{}/*.png'.format(sub_folder))  # Get path to images
+    for sub_folder in ['LONG', 'SHORT', 'FLAT']:
+        images = glob.glob(f'{path}/{sub_folder}/*.png')
         dates = [dt.split('/')[-1].split('\\')[-1].split('.')[0].replace('_', '-') for dt in images]
         data_slice = pd.DataFrame({'Images': images, 'Labels': [sub_folder] * len(images), 'Dates': dates})
         data_slice['Dates'] = pd.to_datetime(data_slice['Dates'])

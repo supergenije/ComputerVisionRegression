@@ -21,7 +21,7 @@ def create_gaf(ts) -> Dict[str, Any]:
 
 
 # Create images of the bundle that we pass
-def create_images(X_plots: Any, image_name: str, destination: str, image_matrix: tuple =(2, 2)) -> None:
+def create_images(X_plots: Any, image_name: str, repo: str, image_matrix: tuple =(1, 1)) -> None:
     """
     :param X_plots:
     :param image_name:
@@ -42,6 +42,5 @@ def create_images(X_plots: Any, image_name: str, destination: str, image_matrix:
         ax.set_yticks([])
         ax.imshow(image, cmap='rainbow', origin='lower')
 
-    repo = os.path.join('TRAIN', destination)
     fig.savefig(os.path.join(repo, image_name))
     plt.close(fig)

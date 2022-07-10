@@ -10,40 +10,40 @@ import os
 
 #  Ensemble CNN network to train a CNN model on GAF images labeled Long and Short
 PATH = os.path.dirname(__file__)
-IMAGES_PATH = os.path.join(PATH, 'TRAIN')
+IMAGES_PATH = os.path.join(PATH, 'GramianAngularFields/TRAIN')
 REPO = os.path.join(PATH, 'Models')
 PATH_DOC = os.path.join(os.path.dirname(__file__), 'Documents')
 PATH_OUT = os.path.join(os.path.dirname(__file__), 'Output')
 EPOCHS = 5
-SPLIT = 0.5
+SPLIT = 0.2
 LR = 0.001
 TIMESTAMP = dt.datetime.now().strftime("%Y%m%d%H%M%S")
 
 TEST_LOOKBACK = 250
 
-cnn_networks = 3
+cnn_networks = 1
 model = []
 for j in range(cnn_networks):
     model.append(
         tf.keras.models.Sequential([
             #  First Convolution
-            Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(255, 255, 3)),
-            BatchNormalization(),
-            Conv2D(32, kernel_size=(3, 3), activation='relu'),
-            BatchNormalization(),
-            Conv2D(32, kernel_size=(3, 3), strides=2, padding='same', activation='relu'),
-            BatchNormalization(),
-            Dropout(0.4),
-            # Second Convolution
-            Conv2D(64, kernel_size=(3, 3), activation='relu'),
+            Conv2D(64, kernel_size=(3, 3), activation='relu', input_shape=(512, 512, 3)),
             BatchNormalization(),
             Conv2D(64, kernel_size=(3, 3), activation='relu'),
             BatchNormalization(),
             Conv2D(64, kernel_size=(3, 3), strides=2, padding='same', activation='relu'),
             BatchNormalization(),
             Dropout(0.4),
+            # Second Convolution
+            Conv2D(128, kernel_size=(3, 3), activation='relu'),
+            BatchNormalization(),
+            Conv2D(128, kernel_size=(3, 3), activation='relu'),
+            BatchNormalization(),
+            Conv2D(128, kernel_size=(3, 3), strides=2, padding='same', activation='relu'),
+            BatchNormalization(),
+            Dropout(0.4),
             # Third Convolution
-            Conv2D(128, kernel_size=4, activation='relu'),
+            Conv2D(256, kernel_size=4, activation='relu'),
             BatchNormalization(),
             Flatten(),
             Dropout(0.4),
@@ -53,9 +53,10 @@ for j in range(cnn_networks):
     # Compile each model
     model[j].compile(optimizer=Adam(lr=LR), loss='binary_crossentropy', metrics=['acc'])
 
-# All images will be rescaled by 1./255
-train_validate_datagen = ImageDataGenerator(rescale=1/255, validation_split=SPLIT)  # set validation split
-test_datagen = ImageDataGenerator(rescale=1/255)
+
+# All images will be rescaled by 1./512
+train_validate_datagen = ImageDataGenerator(rescale=1/512, validation_split=SPLIT)  # set validation split
+test_datagen = ImageDataGenerator(rescale=1/512)
 data_chunks = ensemble_data(cnn_networks, IMAGES_PATH)
 for j in range(cnn_networks):
     print('Net : {}'.format(j+1))
@@ -64,21 +65,21 @@ for j in range(cnn_networks):
     train_generator = train_validate_datagen.flow_from_dataframe(
         dataframe=df_train,
         directory=IMAGES_PATH,
-        target_size=(255, 255),
+        target_size=(512, 512),
         x_col='Images',
         y_col='Labels',
         batch_size=32,
-        class_mode='binary',
+        class_mode='categorical',
         subset='training')
 
     validation_generator = train_validate_datagen.flow_from_dataframe(
         dataframe=df_train,
         directory=IMAGES_PATH,
-        target_size=(255, 255),
+        target_size=(512, 512),
         x_col='Images',
         y_col='Labels',
         batch_size=32,
-        class_mode='binary',
+        class_mode='categorical',
         subset='validation')
 
     test_generator = test_datagen.flow_from_dataframe(
@@ -86,8 +87,8 @@ for j in range(cnn_networks):
         x_col='Images',
         y_col='Labels',
         directory=IMAGES_PATH,
-        target_size=(255, 255),
-        class_mode='binary')
+        target_size=(512, 512),
+        class_mode='categorical')
 
     steps_per_epoch = train_generator.n // train_generator.batch_size
     validation_steps = validation_generator.n // validation_generator.batch_size
